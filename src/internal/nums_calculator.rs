@@ -20,21 +20,18 @@ pub fn generate_numbers_from_cputime() -> [u128; 2] {
     let fin_cputime_millis      =    finish_cpu_time_duration.as_millis();
     
     let add_cputime_generated: u128 = (
-        (sta_cputime_secs as i128 + sta_cputime_nanos as i128+ sta_cputime_millis as i128) + 
-        (fin_cputime_secs as i128 + fin_cputime_nanos as i128+ fin_cputime_millis as i128)
-    ).abs() as u128;
+        (sta_cputime_secs as u128 + sta_cputime_nanos  + sta_cputime_millis ) + 
+        (fin_cputime_secs as u128 + fin_cputime_nanos + fin_cputime_millis )
+    );
     
     let sub_cputime_generated: u128 = (
         (fin_cputime_secs as i128 + fin_cputime_nanos as i128 + fin_cputime_millis as i128) -
         (sta_cputime_secs as i128 + sta_cputime_nanos as i128 + sta_cputime_millis as i128)
     ).abs() as u128;
     
-    let sat_cputime_as_str: String = format!("{}{}", sta_cputime_secs, sta_cputime_nanos );
-    let fin_cputime_as_str: String = format!("{}{}", fin_cputime_secs, fin_cputime_nanos);
-
-    if cfg!(debug_assertions) {
-        debug_vars!(start_cpu_time_duration, sat_cputime_as_str, finish_cpu_time_duration, fin_cputime_as_str, add_cputime_generated, sub_cputime_generated);
-    }
+    
+    debug_vars!(start_cpu_time_duration, finish_cpu_time_duration, add_cputime_generated, sub_cputime_generated);
+    
     [add_cputime_generated, sub_cputime_generated]
 }
 
@@ -58,10 +55,8 @@ pub fn generate_numbers_from_local_calendar() -> [i128; 2]{
 
     sub_local_calendar =  (local_timestamp.year() as i128 + local_timestamp.month() as i128 + local_timestamp.day() as i128) -
         (local_timestamp.hour() as i128 + local_timestamp.minute() as i128 + local_timestamp.second() as i128 + local_timestamp.nanosecond() as i128);
+    debug_vars!(local_timestamp, local_timestamp_str, add_local_calendar, sub_local_calendar);
     
-    if cfg!(debug_assertions) {
-        debug_vars!(local_timestamp, local_timestamp_str, add_local_calendar, sub_local_calendar);
-    }
     [add_local_calendar, sub_local_calendar]
 }
 
@@ -79,9 +74,7 @@ pub fn generate_numbers_from_hostname(salt: u16) -> u64 {
     }
     hostname.hash(&mut hasher);
     let hostname_hash = hasher.finish();
+    debug_vars!(hostname, hostname_hash, salt);
     
-    if cfg!(debug_assertions) {
-        debug_vars!(hostname, hostname_hash);
-    }
     hostname_hash
 }

@@ -13,6 +13,7 @@ macro_rules! debug_vars {
         }
 
         {
+            #![allow(unused)]
             let mut first = true;            
             $(
                 if !first {
@@ -27,4 +28,15 @@ macro_rules! debug_vars {
             println!(); 
         }
     };
+}
+
+// This macro executes the code and records the actual time it takes for the execution to complete.
+#[macro_export] 
+macro_rules! measure {
+    ($code:block) => {{
+        let start = std::time::Instant::now();
+        let result = $code; 
+        let time = start.elapsed();
+        (result, time) 
+    }};
 }

@@ -1,3 +1,6 @@
+#![allow(unused)]
+
+use chrono::{Datelike, TimeZone, Timelike};
 use cpu_time::ProcessTime;
 use std::hash::{DefaultHasher, Hash, Hasher};
 
@@ -33,6 +36,33 @@ pub fn generate_numbers_from_cputime() -> [u128; 2] {
         debug_vars!(start_cpu_time_duration, sat_cputime_as_str, finish_cpu_time_duration, fin_cputime_as_str, add_cputime_generated, sub_cputime_generated);
     }
     [add_cputime_generated, sub_cputime_generated]
+}
+
+pub fn generate_numbers_from_local_calendar() -> [i128; 2]{
+    let local_timestamp = chrono::Local::now();
+    let mut add_local_calendar: i128 = i128::MAX;
+    let mut sub_local_calendar: i128 = i128::MIN;
+
+    let local_timestamp_str = format!(
+        "{}{:02}{:02}{}{}{}{}", 
+        local_timestamp.year(), 
+        local_timestamp.month(), 
+        local_timestamp.day(),
+        local_timestamp.hour(),
+        local_timestamp.minute(),
+        local_timestamp.second(),
+        local_timestamp.nanosecond()
+    );    
+
+    add_local_calendar = local_timestamp_str.parse::<i128>().unwrap_or(i128::MAX);
+
+    sub_local_calendar =  (local_timestamp.year() as i128 + local_timestamp.month() as i128 + local_timestamp.day() as i128) -
+        (local_timestamp.hour() as i128 + local_timestamp.minute() as i128 + local_timestamp.second() as i128 + local_timestamp.nanosecond() as i128);
+    
+    if cfg!(debug_assertions) {
+        debug_vars!(local_timestamp, local_timestamp_str, add_local_calendar, sub_local_calendar);
+    }
+    [add_local_calendar, sub_local_calendar]
 }
 
 pub fn generate_numbers_from_hostname(salt: u16) -> u64 {

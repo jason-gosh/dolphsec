@@ -20,6 +20,10 @@ impl Key {
         }
     }
 
+    fn name(&mut self, new_name: String){
+        self.name = new_name;
+    }
+    
     fn content(&mut self, new_content: String){
         self.content = new_content.clone();
         self.size = new_content.len();
@@ -41,7 +45,7 @@ impl Key {
         let sub_content = &self.content.split_once("-");
         match sub_content {
             Some((l_con, r_con)) => {
-                let mut r_new_cont = 1i128; 
+                let mut r_new_cont: i128 = 1; 
                 for s in r_con.split('*') {
                     let Ok(number) = s.trim().parse::<i128>() else {
                         return; 
@@ -91,19 +95,26 @@ pub fn generate_single_key () -> Key {
 
 pub fn generate_half_key () -> Key {
     let mut half_key = generate_base_key("half_key".to_string());
-    let (_,duration_elapsed) = measure!({
+    let (_, duration_elapsed) = measure!({
         let mut key_content : String = half_key.get_value().to_string();
         let [add, sub] = generate_numbers_from_local_calendar();
         key_content.push_str(&format!("{}{}", add, sub));
         half_key.content(key_content)
     });
-    debug_vars!(duration_elapsed, half_key);
     half_key.push_content(format!("*{}", duration_elapsed.as_nanos()));
-    debug_vars!(half_key);
-
+    debug_vars!(duration_elapsed, half_key);
     half_key.try_operate();
 
     half_key
+}
+
+pub fn generate_hight_key () -> Key {
+    let mut hight_key = generate_half_key();
+    hight_key.name("hight_key".to_string());
+
+    
+    debug_vars!(hight_key);
+    hight_key
 }
 
 fn generate_base_key(key_name: String) -> Key {
@@ -114,7 +125,7 @@ fn generate_base_key(key_name: String) -> Key {
     let hashed_hostname = generate_numbers_from_hostname(sub_cut);
     
     let base_key_str: String = format!("{}{}{}", hashed_hostname, add, sub);
-    let base_key  = Key::new(key_name, base_key_str.clone());
+    let base_key = Key::new(key_name, base_key_str.clone());
     debug_vars!(base_key_str, hashed_hostname, base_key);
     
     base_key

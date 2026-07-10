@@ -1,8 +1,10 @@
+#![allow(dead_code)]
+
 use std::fmt::{Debug, Formatter, Result};
 use crate::modules::nums_calculator::{generate_numbers_from_cputime, generate_numbers_from_hostname, generate_numbers_from_local_calendar};
 use crate::{debug_vars, measure};
 
-#[derive(Clone)]
+#[derive(Hash, PartialEq, Eq, Clone)]
 pub struct Key{
     name: String,
     content: String,
@@ -64,19 +66,13 @@ impl Key {
             }
         }            
     }
-}
 
-pub trait KeyBehavior{
-    fn get_value(&self) -> &str;
-}
-
-impl KeyBehavior for Key{
     fn get_value(&self) -> &str {
         &self.content 
     }
 }
 
-impl Debug for Key{
+impl Debug for Key {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         f.debug_struct("key")
             .field("name", &self.name)
@@ -112,7 +108,6 @@ pub fn generate_hight_key () -> Key {
     let mut hight_key = generate_half_key();
     hight_key.name("hight_key".to_string());
 
-    
     debug_vars!(hight_key);
     hight_key
 }

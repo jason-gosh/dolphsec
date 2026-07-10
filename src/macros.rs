@@ -10,22 +10,22 @@ macro_rules! debug_vars {
 
             println!();
             println!("[INVOKED BY] fn {}()", fn_name);
-        }
 
-        {
-            #![allow(unused)]
-            let mut first = true;            
-            $(
-                if !first {
-                    print!(",\n");
-                }
-                first = false;
+            {
+                #![allow(unused)]
+                let mut first = true;            
+                $(
+                    if !first {
+                        print!(",\n");
+                    }
+                    first = false;
+                    
+                    print!("\t");
+                    print!("{}: {:?}", stringify!($val), $val);
+                )+
                 
-                print!("\t");
-                print!("{}: {:?}", stringify!($val), $val);
-            )+
-            
-            println!(); 
+                println!(); 
+            }
         }
     };
 }

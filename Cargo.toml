@@ -6,4 +6,6 @@ edition = "2024"
 [dependencies]
 chrono = "0.4.45"
 cpu-time = "1.0.0"
+hmac = "0.13.0"
 hostname = "0.4.2"
+sha2 = "0.11.0"
